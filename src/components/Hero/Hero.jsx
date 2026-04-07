@@ -13,7 +13,7 @@ function CinematographerSilhouette({ src }) {
       src={src}
       style={{
         width: "auto",
-        height: "100vh",
+        height: "auto",
         objectFit: "cover",
       }}
       alt="Cinematographer"
