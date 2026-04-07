@@ -1,0 +1,37 @@
+#contact {
+  background: var(--black);
+  text-align: center;
+}
+
+.contact-inner {
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.contact-sub {
+  font-size: 16px;
+  color: rgba(240,236,228,.48);
+  line-height: 1.75;
+  margin-bottom: 48px;
+  opacity: 0;
+  transform: translateY(38px);
+}
+
+.contact-link {
+  display: inline-block;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px;
+  font-weight: 400;
+  color: var(--gold);
+  text-decoration: none;
+  letter-spacing: 2px;
+  border-bottom: 1px solid rgba(201,168,76,.3);
+  padding-bottom: 4px;
+  transition: color .3s, border-color .3s;
+  opacity: 0;
+  transform: translateY(38px);
+}
+.contact-link:hover {
+  color: var(--gold-l);
+  border-color: var(--gold-l);
+}

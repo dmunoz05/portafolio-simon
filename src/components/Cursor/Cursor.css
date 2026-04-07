@@ -1,0 +1,26 @@
+#cursor,
+#cursor-follower {
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  transition: width .3s, height .3s, background .3s, border-color .3s;
+}
+
+#cursor {
+  width: 10px;
+  height: 10px;
+  background: var(--gold);
+  z-index: 10000;
+}
+
+#cursor-follower {
+  width: 38px;
+  height: 38px;
+  border: 1px solid rgba(201, 168, 76, .45);
+  z-index: 9999;
+}
+
+body.hov #cursor          { width: 18px; height: 18px; }
+body.hov #cursor-follower { width: 58px; height: 58px; border-color: var(--gold); }

@@ -1,0 +1,21 @@
+footer {
+  padding: 36px 64px;
+  border-top: 1px solid rgba(255,255,255,.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+footer p {
+  font-size: 11px;
+  color: var(--gray);
+  letter-spacing: 2px;
+}
+
+.ft-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 17px;
+  letter-spacing: 9px;
+  color: var(--white);
+  opacity: .35;
+}

@@ -1,0 +1,91 @@
+/* ── Lightbox ─────────────────────────────────── */
+#lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0);
+  pointer-events: none;
+  cursor: none;
+}
+#lightbox.open { pointer-events: all; }
+
+#lb-backdrop {
+  position: absolute; inset: 0;
+  background: rgba(5,5,5,.96);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  opacity: 0;
+}
+
+#lb-content {
+  position: relative; z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 92vw; max-height: 88vh;
+  opacity: 0;
+  transform: scale(.92);
+}
+
+#lb-img {
+  display: block;
+  max-width: 90vw; max-height: 80vh;
+  object-fit: contain;
+  border-radius: 3px;
+  box-shadow: 0 40px 100px rgba(0,0,0,.8), 0 0 0 1px rgba(201,168,76,.1);
+}
+
+#lb-meta { margin-top: 22px; text-align: center; }
+#lb-cat  {
+  font-size: 10px; letter-spacing: 5px;
+  text-transform: uppercase; color: var(--gold);
+  display: block; margin-bottom: 6px;
+}
+#lb-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 26px; font-weight: 300; color: var(--white);
+}
+#lb-year { font-size: 12px; color: var(--gray); margin-top: 4px; }
+
+/* Close button */
+#lb-close {
+  position: fixed; top: 28px; right: 36px; z-index: 2;
+  width: 46px; height: 46px;
+  border: 1px solid rgba(201,168,76,.3);
+  border-radius: 50%;
+  background: transparent;
+  cursor: none;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0;
+  transform: rotate(-45deg);
+  transition: border-color .3s, background .3s;
+}
+#lb-close:hover { border-color: var(--gold); background: rgba(201,168,76,.08); }
+#lb-close svg   { pointer-events: none; }
+
+/* Arrow buttons */
+.lb-arrow {
+  position: fixed; top: 50%; z-index: 2;
+  transform: translateY(-50%);
+  width: 52px; height: 52px;
+  border: 1px solid rgba(201,168,76,.25);
+  border-radius: 50%;
+  background: transparent;
+  cursor: none;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0;
+  transition: border-color .3s, background .3s;
+}
+.lb-arrow:hover { border-color: var(--gold); background: rgba(201,168,76,.08); }
+#lb-prev { left:  28px; }
+#lb-next { right: 28px; }
+
+#lb-counter {
+  position: fixed; bottom: 32px; left: 50%;
+  transform: translateX(-50%);
+  font-size: 11px; letter-spacing: 4px; color: var(--gray);
+  z-index: 2; opacity: 0;
+}

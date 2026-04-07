@@ -1,0 +1,56 @@
+/* ── Reset & Variables ─────────────────────────── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --black:  #0a0a0a;
+  --carbon: #1a1a1a;
+  --gold:   #c9a84c;
+  --gold-l: #e8c96a;
+  --white:  #f0ece4;
+  --gray:   #777;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--black);
+  color: var(--white);
+  font-family: "Inter", sans-serif;
+  font-weight: 300;
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* ── Shared section elements ───────────────────── */
+section { padding: 130px 64px; }
+
+.s-label {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 14px;
+  opacity: 0;
+  transform: translateY(28px);
+}
+
+.s-title {
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(38px, 5vw, 70px);
+  font-weight: 300;
+  line-height: 1.1;
+  margin-bottom: 56px;
+  opacity: 0;
+  transform: translateY(60px);
+}
+
+.divider {
+  width: 56px;
+  height: 1px;
+  background: var(--gold);
+  margin: 22px 0;
+  opacity: 0;
+  transform: scaleX(0);
+  transform-origin: left;
+}
