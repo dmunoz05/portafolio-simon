@@ -1,14 +1,15 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import simonBg from "../../assets/simon_background.png";
 import "./Hero.css";
 
 gsap.registerPlugin(ScrollTrigger);
 
-/* Inline SVG silhouette of a cinematographer */
+/* Silhouette cinematographer */
 function CinematographerSilhouette({ src }) {
   return (
-    <image
+    <img
       src={src}
       style={{
         width: "100%",
@@ -98,6 +99,8 @@ export default function Hero() {
         end: "bottom top",
         scrub: true,
       };
+      const horizontalTween = gsap.getById("galMove"); // This might be null if not loaded yet, but let's stick to the parallax here
+      
       gsap.to(".hero-content", {
         y: 130,
         ease: "none",
@@ -136,7 +139,7 @@ export default function Hero() {
 
       <div className="hero-scene">
         <div className="hero-glow" />
-        <CinematographerSilhouette src="/assets/simon_background.png" />
+        <CinematographerSilhouette src={simonBg} />
       </div>
 
       <canvas id="grain" ref={canvasRef} />
@@ -144,8 +147,8 @@ export default function Hero() {
       <div className="hero-content">
         <p className="hero-eye">Cinematographer &amp; Visual Storyteller</p>
         <h1 className="hero-title">
-          {"SIMON".split("").map((l) => (
-            <span key={l}>{l}</span>
+          {"SIMON".split("").map((l, i) => (
+            <span key={i}>{l}</span>
           ))}
         </h1>
         <p className="hero-sub">Cinematographer &amp; Visual Storyteller</p>
