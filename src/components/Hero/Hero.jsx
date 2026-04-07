@@ -12,7 +12,7 @@ function CinematographerSilhouette({ src }) {
     <img
       src={src}
       style={{
-        width: "100%",
+        width: "auto",
         height: "100vh",
         objectFit: "cover",
       }}
@@ -100,7 +100,7 @@ export default function Hero() {
         scrub: true,
       };
       const horizontalTween = gsap.getById("galMove"); // This might be null if not loaded yet, but let's stick to the parallax here
-      
+
       gsap.to(".hero-content", {
         y: 130,
         ease: "none",
