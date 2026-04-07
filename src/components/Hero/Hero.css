@@ -167,3 +167,31 @@
   50%  { transform: scaleY(1); transform-origin: bottom; }
   100% { transform: scaleY(0); transform-origin: bottom; }
 }
+
+/* ── Responsive ────────────────────────────── */
+@media screen and (max-width: 768px) {
+  .hero-title {
+    font-size: clamp(48px, 18vw, 82px);
+    letter-spacing: .18em;
+    margin-bottom: 20px;
+  }
+  
+  .hero-content {
+    margin-top: 20vh; /* Bajar el texto más abajo del centro */
+  }
+  
+  .hero-eye {
+    margin-bottom: 12px;
+    font-size: 8px;
+    letter-spacing: 5px;
+  }
+
+  .hero-sub {
+    font-size: 14px;
+    letter-spacing: 2px;
+  }
+  
+  .hero-figure {
+    height: 75vh;
+  }
+}
