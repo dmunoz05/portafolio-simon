@@ -117,11 +117,11 @@ export default function Hero() {
         ease: "none",
         scrollTrigger: { ...st, scrub: 1.5 },
       });
-      gsap.to(".hero-scene", {
-        y: 50,
-        ease: "none",
-        scrollTrigger: { ...st, scrub: 0.8 },
-      });
+      // gsap.to(".hero-scene", {
+      //   y: 50,
+      //   ease: "none",
+      //   scrollTrigger: { ...st, scrub: 0.8 },
+      // });
       gsap.to("#grain", {
         y: 65,
         ease: "none",
