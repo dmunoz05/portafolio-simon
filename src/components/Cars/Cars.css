@@ -1,0 +1,133 @@
+/* ── Gallery section ──────────────────────────── */
+#gallery {
+  background: var(--black);
+  position: relative;
+  height: 600vh;
+  padding: 0;
+}
+
+.gal-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.gal-header {
+  max-width: 1340px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 64px;
+  position: absolute;
+  top: 15vh;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.gal-container {
+  display: flex;
+  align-items: center;
+  gap: 120px;
+  padding: 0 10vw 0 45vw;
+  will-change: transform;
+  height: 100vh;
+}
+
+/* ── Project Card ─────────────────────────────── */
+.pcard {
+  position: relative;
+  border-radius: 3px;
+  overflow: hidden;
+  cursor: none;
+  transform-style: preserve-3d;
+  will-change: transform, opacity;
+  flex-shrink: 0;
+}
+
+.pcard:nth-child(1) { width: 380px; aspect-ratio: 3/4;  margin-top: -100px; }
+.pcard:nth-child(2) { width: 680px; aspect-ratio: 16/9; margin-top:  180px; }
+.pcard:nth-child(3) { width: 580px; aspect-ratio: 16/9; margin-top: -150px; }
+.pcard:nth-child(4) { width: 420px; aspect-ratio: 3/4;  margin-top:  120px; }
+.pcard:nth-child(5) { width: 360px; aspect-ratio: 3/4;  margin-top:  -80px; }
+.pcard:nth-child(6) { width: 720px; aspect-ratio: 16/9; margin-top:  140px; }
+.pcard:last-child   { margin-right: 20vw; }
+
+.pcard img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform .7s cubic-bezier(.25,.46,.45,.94);
+}
+
+.pcard-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(10,10,10,.92) 0%, rgba(10,10,10,.35) 50%, rgba(10,10,10,.08) 100%);
+  transition: opacity .4s;
+}
+
+.pcard-hover {
+  position: absolute; inset: 0;
+  background: rgba(10,10,10,.78);
+  opacity: 0;
+  transition: opacity .4s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pcard-hover-body {
+  text-align: center;
+  padding: 28px;
+  transform: translateY(18px);
+  transition: transform .4s;
+}
+
+.pcard-desc {
+  font-size: 14px;
+  line-height: 1.75;
+  color: rgba(240,236,228,.78);
+  margin-top: 10px;
+}
+
+.pcard-info {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 28px;
+  transition: transform .4s, opacity .4s;
+}
+
+.pcard-cat {
+  font-size: 10px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--gold);
+  display: block;
+  margin-bottom: 5px;
+}
+
+.pcard-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 24px;
+  font-weight: 400;
+  color: var(--white);
+  line-height: 1.2;
+}
+
+.pcard-year { font-size: 12px; color: var(--gray); margin-top: 4px; }
+
+.pcard:hover img           { transform: scale(1.06); }
+.pcard:hover .pcard-hover  { opacity: 1; }
+.pcard:hover .pcard-hover-body { transform: translateY(0); }
+.pcard:hover .pcard-info   { opacity: 0; transform: translateY(8px); }
+
+.pcard-shine {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .3s;
+}
+.pcard:hover .pcard-shine { opacity: 1; }
