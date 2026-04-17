@@ -1,0 +1,147 @@
+/* ── Infografy Section ──────────────────────────── */
+#infografy {
+    position: relative;
+    padding: 0;
+    width: 100%;
+    min-height: 100vh;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Ambas fotos pegadas a su borde, solo la mitad visible */
+#infografy .infografy-side-img {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 80%;
+    width: auto;
+    object-fit: cover;
+    pointer-events: none;
+}
+
+#infografy .infografy-side-img--left {
+    left: -140px;
+}
+
+#infografy .infografy-side-img--right {
+    right: -140px;
+}
+
+/* Texto al centro por encima de las fotos */
+#infografy .infografy-container {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    text-align: center;
+    width: clamp(280px, 40%, 600px);
+}
+
+.infografy-title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.infografy-text {
+    font-size: 1.2rem;
+    line-height: 1.5;
+    color: #fff;
+}
+
+/* ── Responsive ─────────────────────────────────── */
+
+/* Tablet (≤ 1024px): fotos más pequeñas y menos desplazadas */
+@media (max-width: 1024px) {
+    #infografy .infografy-side-img {
+        height: 60%;
+    }
+
+    #infografy .infografy-side-img--left {
+        left: -100px;
+    }
+
+    #infografy .infografy-side-img--right {
+        right: -100px;
+    }
+
+    #infografy .infografy-container {
+        width: clamp(260px, 55%, 550px);
+    }
+
+    .infografy-title {
+        font-size: 1.3rem;
+    }
+
+    .infografy-text {
+        font-size: 0.85rem;
+    }
+}
+
+/* Mobile (≤ 640px): fotos decorativas pequeñas en los bordes,
+   texto ocupa casi todo el ancho */
+@media (max-width: 640px) {
+    #infografy {
+        min-height: 100svh;
+        padding: 4rem 0;
+    }
+
+    #infografy .infografy-side-img {
+        height: 40%;
+    }
+
+    #infografy .infografy-side-img--left {
+        left: -60px;
+    }
+
+    #infografy .infografy-side-img--right {
+        right: -60px;
+    }
+
+    #infografy .infografy-container {
+        width: 75%;
+        padding: 1.5rem;
+    }
+
+    .infografy-title {
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .infografy-text {
+        font-size: 0.78rem;
+        line-height: 1.55;
+    }
+}
+
+/* Mobile muy pequeño (≤ 375px) */
+@media (max-width: 375px) {
+    #infografy .infografy-side-img {
+        height: 30%;
+    }
+
+    #infografy .infografy-side-img--left {
+        left: -40px;
+    }
+
+    #infografy .infografy-side-img--right {
+        right: -40px;
+    }
+
+    #infografy .infografy-container {
+        width: 80%;
+    }
+
+    .infografy-title {
+        font-size: 0.95rem;
+    }
+
+    .infografy-text {
+        font-size: 0.72rem;
+    }
+}
