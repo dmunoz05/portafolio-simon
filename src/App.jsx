@@ -12,7 +12,7 @@ import Contact from "./components/Contact/Contact";
 import Footer from "./components/Footer/Footer";
 import Infografy from "./components/Infografy/Infografy";
 import Pets from "./components/Pets/Pets";
-import VideoFrames from "./components/VideoFrames/videoframes";
+import VideoFrames from "./components/VideoFrames/Videoframes";
 
 export default function App() {
   const [lightboxIndex, setLightboxIndex] = useState(null);
