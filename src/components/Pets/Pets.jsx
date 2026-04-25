@@ -7,20 +7,22 @@ import './Pets.css'
 
 gsap.registerPlugin(ScrollTrigger)
 
-export default function Pets({ onOpen }) {
+export default function Pets({ onOpen, isReady }) {
   const sectionRef = useRef(null)
   const containerRef = useRef(null)
 
   useEffect(() => {
+    if (!isReady) return;
     const ctx = gsap.context(() => {
       const container = containerRef.current
 
       /* Horizontal scroll with GSAP Pinning */
+      const section = sectionRef.current;
       const horizontalTween = gsap.to(container, {
         x: () => -(container.scrollWidth - window.innerWidth),
         ease: 'none',
         scrollTrigger: {
-          trigger: sectionRef.current,
+          trigger: section,
           start: 'top top',
           end: () => `+=${container.scrollWidth}`,
           scrub: 1,
@@ -59,18 +61,24 @@ export default function Pets({ onOpen }) {
       })
 
       /* Section header reveal */
-      gsap.to('.gal-header .s-label', {
-        y: 0, opacity: 1, duration: .9, ease: 'power3.out',
-        scrollTrigger: { trigger: sectionRef.current, start: 'top 80%' },
-      })
-      gsap.to('.gal-header .s-title', {
-        y: 0, opacity: 1, duration: 1.1, ease: 'power3.out', delay: .1,
-        scrollTrigger: { trigger: sectionRef.current, start: 'top 80%' },
-      })
+      gsap.fromTo('.gal-header .s-label', 
+        { y: 30, opacity: 0 },
+        {
+          y: 0, opacity: 1, duration: .9, ease: 'power3.out',
+          scrollTrigger: { trigger: section, start: 'top 80%' },
+        }
+      )
+      gsap.fromTo('.gal-header .s-title', 
+        { y: 40, opacity: 0 },
+        {
+          y: 0, opacity: 1, duration: 1.1, ease: 'power3.out', delay: .1,
+          scrollTrigger: { trigger: section, start: 'top 80%' },
+        }
+      )
     }, sectionRef)
 
-    return () => ctx.revert()
-  }, [])
+    return () => ctx.revert();
+  }, [isReady]);
 
   return (
     <section id="gallery" ref={sectionRef}>

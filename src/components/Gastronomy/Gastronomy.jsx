@@ -1,76 +1,112 @@
-import { useEffect, useRef } from 'react'
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import ProjectCard from './ProjectCard'
-import { projects } from './projects'
-import './Gastronomy.css'
+import { useEffect, useRef } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import ProjectCard from "./ProjectCard";
+import { projects } from "./projects";
+import "./Gastronomy.css";
 
-gsap.registerPlugin(ScrollTrigger)
+gsap.registerPlugin(ScrollTrigger);
 
 export default function Gastronomy({ onOpen }) {
-  const sectionRef = useRef(null)
-  const containerRef = useRef(null)
+  const sectionRef = useRef(null);
+  const containerRef = useRef(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      const container = containerRef.current
+      const container = containerRef.current;
+      const section = sectionRef.current;
 
-      /* Horizontal scroll with GSAP Pinning */
+      // ─── Scroll horizontal principal ─────────────────────────────────────
       const horizontalTween = gsap.to(container, {
         x: () => -(container.scrollWidth - window.innerWidth),
-        ease: 'none',
+        ease: "none",
         scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top top',
-          end: () => `+=${container.scrollWidth}`,
+          trigger: section,
+          start: "top top",
+          end: () => `+=${container.scrollWidth - window.innerWidth}`,
           scrub: 1,
           pin: true,
           anticipatePin: 1,
           invalidateOnRefresh: true,
-          id: 'galMove',
+          id: "galMove",
+          // Callback para oscurecer / aclarar el canvas de fondo
+          // según avancemos en el scroll horizontal
+          onUpdate: (self) => {
+            // A medida que avanza el scroll horizontal, hacemos que
+            // el fondo del canvas se vaya a negro suavemente
+            const bg = document.querySelector(".video-fixed-bg");
+            if (bg) {
+              // 0 = canvas completamente visible, 1 = negro total
+              gsap.set(bg, { opacity: 1 - self.progress * 0.85 });
+            }
+          },
         },
-      })
+      });
 
-      /* Card entrance animations */
-      container.querySelectorAll('.pcard').forEach((card) => {
+      // ─── Entrada de cards ─────────────────────────────────────────────────
+      container.querySelectorAll(".pcard").forEach((card) => {
         gsap.from(card, {
-          x: 100,
+          x: 120,
           opacity: 0,
           duration: 1.2,
-          ease: 'power3.out',
+          ease: "power3.out",
           scrollTrigger: {
             trigger: card,
             containerAnimation: horizontalTween,
-            start: 'left 95%',
-            toggleActions: 'play none none none',
+            start: "left 95%",
+            toggleActions: "play none none none",
           },
-        })
+        });
 
-        /* Parallax inner image */
-        gsap.to(card.querySelector('img'), {
-          x: -60,
-          ease: 'none',
+        // Parallax interior
+        const img = card.querySelector("img");
+        if (img) {
+          gsap.to(img, {
+            x: -60,
+            ease: "none",
+            scrollTrigger: {
+              trigger: card,
+              containerAnimation: horizontalTween,
+              scrub: true,
+            },
+          });
+        }
+      });
+
+      // ─── Header reveal ───────────────────────────────────────────────────
+      gsap.fromTo(
+        ".gal-header .s-label",
+        { y: 30, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.9,
+          ease: "power3.out",
           scrollTrigger: {
-            trigger: card,
-            containerAnimation: horizontalTween,
-            scrub: true,
+            trigger: section,
+            start: "top 80%",
           },
-        })
-      })
+        },
+      );
+      gsap.fromTo(
+        ".gal-header .s-title",
+        { y: 40, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 1.1,
+          ease: "power3.out",
+          delay: 0.1,
+          scrollTrigger: {
+            trigger: section,
+            start: "top 80%",
+          },
+        },
+      );
+    }, sectionRef);
 
-      /* Section header reveal */
-      gsap.to('.gal-header .s-label', {
-        y: 0, opacity: 1, duration: .9, ease: 'power3.out',
-        scrollTrigger: { trigger: sectionRef.current, start: 'top 80%' },
-      })
-      gsap.to('.gal-header .s-title', {
-        y: 0, opacity: 1, duration: 1.1, ease: 'power3.out', delay: .1,
-        scrollTrigger: { trigger: sectionRef.current, start: 'top 80%' },
-      })
-    }, sectionRef)
-
-    return () => ctx.revert()
-  }, [])
+    return () => ctx.revert();
+  }, []);
 
   return (
     <section id="gallery" ref={sectionRef}>
@@ -79,7 +115,6 @@ export default function Gastronomy({ onOpen }) {
           <span className="s-label">Trabajos seleccionados</span>
           <h2 className="s-title">Gastronomía</h2>
         </div>
-
         <div className="gal-container" ref={containerRef}>
           {projects.map((project, i) => (
             <ProjectCard
@@ -92,5 +127,5 @@ export default function Gastronomy({ onOpen }) {
         </div>
       </div>
     </section>
-  )
+  );
 }

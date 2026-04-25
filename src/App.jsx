@@ -33,10 +33,10 @@ export default function App() {
       <Infografy />
       <VideoFrames>
         <Gastronomy onOpen={(i) => setLightboxIndex(i)} />
-        <Pets onOpen={(i) => setLightboxIndex(i)} />
+        {/* <Pets onOpen={(i) => setLightboxIndex(i)} />
         <Cars onOpen={(i) => setLightboxIndex(i)} />
         <Portraits onOpen={(i) => setLightboxIndex(i)} />
-        <Church onOpen={(i) => setLightboxIndex(i)} />
+        <Church onOpen={(i) => setLightboxIndex(i)} /> */}
       </VideoFrames>
       <Lightbox
         activeIndex={lightboxIndex}

@@ -5,20 +5,20 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 const frameCount = 160;
+const ZOOM_START_FRAME = 100;
+const MAX_ZOOM = 10; // cuánto zoom al llegar al frame final
+
 const currentFrame = (index) =>
   `/frames/ezgif-frame-${(index + 1).toString().padStart(3, "0")}.png`;
 
 export default function VideoFrames({ children }) {
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
-  const projectsRef = useRef(null);
   const imagesRef = useRef([]);
   const [isMobile, setIsMobile] = useState(null);
 
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 1024);
-    };
+    const checkMobile = () => setIsMobile(window.innerWidth < 1024);
     checkMobile();
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
@@ -34,29 +34,30 @@ export default function VideoFrames({ children }) {
     const drawImage = (img, zoomFactor = 1) => {
       if (!img) return;
       const dpr = window.devicePixelRatio || 1;
-      const canvasWidth = canvas.width / dpr;
-      const canvasHeight = canvas.height / dpr;
-      
-      const sourceWidth = img.width / zoomFactor;
-      const sourceHeight = img.height / zoomFactor;
-      const sourceX = (img.width - sourceWidth) / 2;
-      const sourceY = (img.height - sourceHeight) / 2;
-      
-      const scale = Math.max(canvasWidth / sourceWidth, canvasHeight / sourceHeight);
-      const destW = sourceWidth * scale;
-      const destH = sourceHeight * scale;
+      const cw = canvas.width / dpr;
+      const ch = canvas.height / dpr;
 
-      context.clearRect(0, 0, canvasWidth, canvasHeight);
-      context.drawImage(img, sourceX, sourceY, sourceWidth, sourceHeight, (canvasWidth - destW) / 2, (canvasHeight - destH) / 2, destW, destH);
-    };
+      const srcW = img.width / zoomFactor;
+      const srcH = img.height / zoomFactor;
+      const srcX = (img.width - srcW) / 2;
+      const srcY = (img.height - srcH) / 2;
 
-    const preloadImages = () => {
-      for (let i = 0; i < frameCount; i++) {
-        const img = new Image();
-        img.src = currentFrame(i);
-        imagesRef.current[i] = img;
-        if (i === 0) img.onload = () => drawImage(img, 1);
-      }
+      const scale = Math.max(cw / srcW, ch / srcH);
+      const dstW = srcW * scale;
+      const dstH = srcH * scale;
+
+      context.clearRect(0, 0, cw, ch);
+      context.drawImage(
+        img,
+        srcX,
+        srcY,
+        srcW,
+        srcH,
+        (cw - dstW) / 2,
+        (ch - dstH) / 2,
+        dstW,
+        dstH,
+      );
     };
 
     const handleResize = () => {
@@ -67,14 +68,21 @@ export default function VideoFrames({ children }) {
       if (imagesRef.current[0]) drawImage(imagesRef.current[0], 1);
     };
 
-    preloadImages();
+    // Pre-carga de imágenes
+    for (let i = 0; i < frameCount; i++) {
+      const img = new Image();
+      img.src = currentFrame(i);
+      imagesRef.current[i] = img;
+      if (i === 0) img.onload = () => drawImage(img, 1);
+    }
+
     handleResize();
     window.addEventListener("resize", handleResize);
 
-    const animationState = { frame: 0 };
+    const animState = { frame: 0, zoom: 1 };
 
-    // 1. Frames & Zoom (Durante el intro-spacer)
-    gsap.to(animationState, {
+    // ─── 1. Animación de frames + zoom sincronizado ───────────────────────
+    gsap.to(animState, {
       frame: frameCount - 1,
       ease: "none",
       scrollTrigger: {
@@ -84,61 +92,41 @@ export default function VideoFrames({ children }) {
         end: "bottom top",
         scrub: true,
         onUpdate: () => {
-          const frameIndex = Math.round(animationState.frame);
+          const frameIndex = Math.round(animState.frame);
           const img = imagesRef.current[frameIndex];
+
+          // Zoom empieza en frame ZOOM_START_FRAME, llega a MAX_ZOOM en el último
           let zoom = 1;
-          if (frameIndex > 60) zoom = 1 + ((frameIndex - 60) / (frameCount - 60)) * 6;
-          if (img && img.complete) drawImage(img, zoom);
-        }
-      }
+          if (frameIndex >= ZOOM_START_FRAME) {
+            const progress =
+              (frameIndex - ZOOM_START_FRAME) /
+              (frameCount - 1 - ZOOM_START_FRAME);
+            zoom = 1 + progress * (MAX_ZOOM - 1);
+          }
+
+          if (img?.complete) drawImage(img, zoom);
+        },
+      },
     });
 
-    // 2. Zoom extra del canvas y opacidad
-    gsap.to(canvasRef.current, {
-      scale: 4,
-      opacity: 0.1,
-      scrollTrigger: {
-        id: "vf-bg-zoom",
-        trigger: ".video-intro-spacer",
-        start: "70% top",
-        end: "bottom top",
-        scrub: true,
-      }
-    });
-
-    // 3. Revelar proyectos con fade-in
-    gsap.fromTo(projectsRef.current, 
-      { opacity: 0, y: 100 },
-      { 
-        opacity: 1, 
-        y: 0, 
-        duration: 1,
-        scrollTrigger: {
-          id: "vf-projects-reveal",
-          trigger: projectsRef.current,
-          start: "top 90%",
-          end: "top 40%",
-          scrub: true,
-        }
-      }
-    );
-
-    // 4. Fade out total al final de todo el contenedor
+    // ─── 2. Fade out del canvas cuando los hijos toman protagonismo ───────
+    // Empieza a desvanecerse solo cuando el contenedor hijo
+    // ya ha scrolleado bastante (al final de todo)
     gsap.to(".video-fixed-bg", {
       opacity: 0,
       scrollTrigger: {
         id: "vf-hide",
         trigger: containerRef.current,
-        start: "bottom 80%",
+        start: "bottom 90%",
         end: "bottom top",
         scrub: true,
-      }
+      },
     });
 
     return () => {
       window.removeEventListener("resize", handleResize);
-      ScrollTrigger.getAll().forEach(st => {
-        if (st.vars.id && st.vars.id.startsWith("vf-")) st.kill();
+      ScrollTrigger.getAll().forEach((st) => {
+        if (st.vars.id?.startsWith("vf-")) st.kill();
       });
     };
   }, [isMobile]);
@@ -146,34 +134,28 @@ export default function VideoFrames({ children }) {
   if (isMobile === false) return <>{children}</>;
 
   return (
-    <div ref={containerRef} className="video-portal-wrapper">
-      {/* Fondo FIJO para que nunca se mueva en Y */}
+    <div ref={containerRef} className="vf-wrapper">
+      {/* Canvas fijo — fondo de toda la escena */}
       <div className="video-fixed-bg">
         <canvas ref={canvasRef} className="video-canvas" />
       </div>
 
-      {/* Espaciador que controla la animación inicial */}
+      {/* Espaciador que controla la animación de frames */}
       <div className="video-intro-spacer" style={{ height: "300vh" }} />
 
-      {/* Los proyectos fluyen por encima del fondo fijo */}
-      <div ref={projectsRef} className="projects-integrated-flow">
-        {children}
-      </div>
+      {/* Hijos (Gastronomy, Pets, etc.) fluyen encima del canvas congelado */}
+      <div className="vf-children">{children}</div>
 
       <style>{`
-        .video-portal-wrapper {
+        .vf-wrapper {
           position: relative;
           width: 100%;
           background: #000;
-          overflow: visible;
         }
         .video-fixed-bg {
           position: fixed;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100vh;
-          z-index: 0; /* Al fondo de todo */
+          inset: 0;
+          z-index: 0;
           overflow: hidden;
           background: #000;
           pointer-events: none;
@@ -182,17 +164,19 @@ export default function VideoFrames({ children }) {
           width: 100% !important;
           height: 100% !important;
           display: block;
-          transform: scale(1.1);
-          transform-origin: center;
         }
-        .projects-integrated-flow {
+        .vf-children {
           position: relative;
           z-index: 1;
           width: 100%;
-          margin-top: -100vh; /* Para que empiecen a aparecer sobre el video */
+          /* margin-top negativo para que Gastronomy empiece
+             justo cuando el canvas ya está en el último frame con zoom */
+          margin-top: -100vh;
         }
-        .projects-integrated-flow section,
-        .projects-integrated-flow #gallery {
+        /* Los hijos son transparentes para que el canvas se vea */
+        .vf-children section,
+        .vf-children #gallery,
+        .vf-children .gal-sticky {
           background: transparent !important;
         }
       `}</style>
