@@ -22,7 +22,7 @@ export default function Gastronomy({ onOpen }) {
         ease: "none",
         scrollTrigger: {
           trigger: section,
-          start: "top top",
+          start: "top 90%",
           end: () => `+=${container.scrollWidth - window.innerWidth}`,
           scrub: 1,
           pin: true,

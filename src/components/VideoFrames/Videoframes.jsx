@@ -117,7 +117,7 @@ export default function VideoFrames({ children }) {
       scrollTrigger: {
         id: "vf-hide",
         trigger: containerRef.current,
-        start: "bottom 90%",
+        start: "bottom bottom",
         end: "bottom top",
         scrub: true,
       },

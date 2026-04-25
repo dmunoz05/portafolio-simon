@@ -20,9 +20,9 @@
   max-width: 1340px;
   width: 100%;
   margin: 0 auto;
-  padding: 0 64px;
+  padding: 0 24px;
   position: absolute;
-  top: 15vh;
+  top: 8vh;
   z-index: 10;
   pointer-events: none;
 }
@@ -30,8 +30,8 @@
 .gal-container {
   display: flex;
   align-items: center;
-  gap: 120px;
-  padding: 0 10vw 0 45vw;
+  gap: 40px;
+  padding: 0 8vw 0 8vw;
   will-change: transform;
   height: 100vh;
 }
