@@ -22,7 +22,7 @@ export default function Gastronomy({ onOpen }) {
         ease: "none",
         scrollTrigger: {
           trigger: section,
-          start: "top 90%",
+          start: "top top",
           end: () => `+=${container.scrollWidth - window.innerWidth}`,
           scrub: 1,
           pin: true,
@@ -73,36 +73,22 @@ export default function Gastronomy({ onOpen }) {
         }
       });
 
-      // ─── Header reveal ───────────────────────────────────────────────────
-      gsap.fromTo(
-        ".gal-header .s-label",
-        { y: 30, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.9,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: section,
-            start: "top 80%",
-          },
+      // ─── Header: aparece al entrar, se auto-dismissea en 2.5s ───────────
+      const header = section.querySelector(".gal-header");
+      gsap.set(header, { y: -30, opacity: 0 });
+
+      ScrollTrigger.create({
+        trigger: section,
+        start: "top top", // la sección llega arriba del viewport → activa header
+        onEnter: () => {
+          gsap.to(header, { y: 0, opacity: 1, duration: 0.7, ease: "power3.out" });
+          gsap.to(header, { y: 60, opacity: 0, duration: 0.6, ease: "power2.in", delay: 2.5 });
         },
-      );
-      gsap.fromTo(
-        ".gal-header .s-title",
-        { y: 40, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 1.1,
-          ease: "power3.out",
-          delay: 0.1,
-          scrollTrigger: {
-            trigger: section,
-            start: "top 80%",
-          },
+        onEnterBack: () => {
+          gsap.to(header, { y: 0, opacity: 1, duration: 0.6, ease: "power3.out" });
+          gsap.to(header, { y: 60, opacity: 0, duration: 0.6, ease: "power2.in", delay: 2 });
         },
-      );
+      });
     }, sectionRef);
 
     return () => ctx.revert();

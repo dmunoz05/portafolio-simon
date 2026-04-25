@@ -4,9 +4,9 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const frameCount = 160;
-const ZOOM_START_FRAME = 100;
-const MAX_ZOOM = 10; // cuánto zoom al llegar al frame final
+const frameCount = 170;
+const ZOOM_START_FRAME = 160;
+const MAX_ZOOM = 8; // cuánto zoom al llegar al frame final
 
 const currentFrame = (index) =>
   `/frames/ezgif-frame-${(index + 1).toString().padStart(3, "0")}.png`;
@@ -14,6 +14,7 @@ const currentFrame = (index) =>
 export default function VideoFrames({ children }) {
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
+  const childrenRef = useRef(null);
   const imagesRef = useRef([]);
   const [isMobile, setIsMobile] = useState(null);
 
@@ -109,6 +110,26 @@ export default function VideoFrames({ children }) {
       },
     });
 
+    // ─── Reveal hijos al llegar al último frame ──────────────────────────
+    // El fade ocurre en los últimos 80vh del spacer, justo antes de que
+    // el usuario llegue a los proyectos
+    gsap.fromTo(
+      childrenRef.current,
+      { opacity: 0 },
+      {
+        opacity: 1,
+        duration: 0.4,
+        ease: "power2.out",
+        scrollTrigger: {
+          id: "vf-reveal-children",
+          trigger: ".video-intro-spacer",
+          start: "bottom 120%",
+          end: "bottom top",
+          scrub: true,
+        },
+      },
+    );
+
     // ─── 2. Fade out del canvas cuando los hijos toman protagonismo ───────
     // Empieza a desvanecerse solo cuando el contenedor hijo
     // ya ha scrolleado bastante (al final de todo)
@@ -117,7 +138,7 @@ export default function VideoFrames({ children }) {
       scrollTrigger: {
         id: "vf-hide",
         trigger: containerRef.current,
-        start: "bottom bottom",
+        start: "bottom top",
         end: "bottom top",
         scrub: true,
       },
@@ -144,7 +165,9 @@ export default function VideoFrames({ children }) {
       <div className="video-intro-spacer" style={{ height: "300vh" }} />
 
       {/* Hijos (Gastronomy, Pets, etc.) fluyen encima del canvas congelado */}
-      <div className="vf-children">{children}</div>
+      <div ref={childrenRef} className="vf-children">
+        {children}
+      </div>
 
       <style>{`
         .vf-wrapper {
@@ -169,9 +192,8 @@ export default function VideoFrames({ children }) {
           position: relative;
           z-index: 1;
           width: 100%;
-          /* margin-top negativo para que Gastronomy empiece
-             justo cuando el canvas ya está en el último frame con zoom */
-          margin-top: -100vh;
+          /* Inicialmente ocultos, GSAP los revela al final del intro */
+          opacity: 0;
         }
         /* Los hijos son transparentes para que el canvas se vea */
         .vf-children section,
