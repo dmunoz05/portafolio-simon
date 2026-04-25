@@ -15,15 +15,17 @@ export default function Cars({ onOpen }) {
     const ctx = gsap.context(() => {
       const container = containerRef.current
 
-      /* Horizontal scroll */
+      /* Horizontal scroll with GSAP Pinning */
       const horizontalTween = gsap.to(container, {
         x: () => -(container.scrollWidth - window.innerWidth),
         ease: 'none',
         scrollTrigger: {
           trigger: sectionRef.current,
           start: 'top top',
-          end: 'bottom bottom',
+          end: () => `+=${container.scrollWidth}`,
           scrub: 1,
+          pin: true,
+          anticipatePin: 1,
           invalidateOnRefresh: true,
           id: 'galMove',
         },
