@@ -1,74 +1,81 @@
-import { useEffect, useRef } from 'react'
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import ProjectCard from './ProjectCard'
-import { projects } from './projects'
-import './Gallery.css'
+import { useEffect, useRef } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import ProjectCard from "./ProjectCard";
+import { projects } from "./projects";
+import "./Gallery.css";
 
-gsap.registerPlugin(ScrollTrigger)
+gsap.registerPlugin(ScrollTrigger);
 
 export default function Gallery({ onOpen }) {
-  const sectionRef   = useRef(null)
-  const containerRef = useRef(null)
+  const sectionRef = useRef(null);
+  const containerRef = useRef(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      const container = containerRef.current
+      const container = containerRef.current;
 
       /* Horizontal scroll */
       const horizontalTween = gsap.to(container, {
         x: () => -(container.scrollWidth - window.innerWidth),
-        ease: 'none',
+        ease: "none",
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: 'top top',
-          end: 'bottom bottom',
+          start: "top top",
+          end: "bottom bottom",
           scrub: 1,
           invalidateOnRefresh: true,
-          id: 'galMove',
+          id: "galMove",
         },
-      })
+      });
 
       /* Card entrance animations */
-      container.querySelectorAll('.pcard').forEach((card) => {
+      container.querySelectorAll(".pcard").forEach((card) => {
         gsap.from(card, {
           x: 100,
           opacity: 0,
           duration: 1.2,
-          ease: 'power3.out',
+          ease: "power3.out",
           scrollTrigger: {
             trigger: card,
             containerAnimation: horizontalTween,
-            start: 'left 95%',
-            toggleActions: 'play none none none',
+            start: "left 95%",
+            toggleActions: "play none none none",
           },
-        })
+        });
 
         /* Parallax inner image */
-        gsap.to(card.querySelector('img'), {
+        gsap.to(card.querySelector("img"), {
           x: -60,
-          ease: 'none',
+          ease: "none",
           scrollTrigger: {
             trigger: card,
             containerAnimation: horizontalTween,
             scrub: true,
           },
-        })
-      })
+        });
+      });
 
       /* Section header reveal */
-      gsap.to('.gal-header .s-label', {
-        y: 0, opacity: 1, duration: .9, ease: 'power3.out',
-        scrollTrigger: { trigger: sectionRef.current, start: 'top 80%' },
-      })
-      gsap.to('.gal-header .s-title', {
-        y: 0, opacity: 1, duration: 1.1, ease: 'power3.out', delay: .1,
-        scrollTrigger: { trigger: sectionRef.current, start: 'top 80%' },
-      })
-    }, sectionRef)
+      gsap.to(".gal-header .s-label", {
+        y: 0,
+        opacity: 1,
+        duration: 0.9,
+        ease: "power3.out",
+        scrollTrigger: { trigger: sectionRef.current, start: "top 80%" },
+      });
+      gsap.to(".gal-header .s-title", {
+        y: 0,
+        opacity: 1,
+        duration: 1.1,
+        ease: "power3.out",
+        delay: 0.1,
+        scrollTrigger: { trigger: sectionRef.current, start: "top 80%" },
+      });
+    }, sectionRef);
 
-    return () => ctx.revert()
-  }, [])
+    return () => ctx.revert();
+  }, []);
 
   return (
     <section id="gallery" ref={sectionRef}>
@@ -90,5 +97,5 @@ export default function Gallery({ onOpen }) {
         </div>
       </div>
     </section>
-  )
+  );
 }

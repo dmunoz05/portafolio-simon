@@ -12,12 +12,15 @@
 
 html { scroll-behavior: smooth; }
 
-body {
+html, body {
   background: var(--black);
   color: var(--white);
   font-family: "Inter", sans-serif;
   font-weight: 300;
+  width: 100%;
   overflow-x: hidden;
+  margin: 0;
+  padding: 0;
   cursor: none;
 }
 
