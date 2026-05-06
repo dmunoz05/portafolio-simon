@@ -1,207 +1,129 @@
 import { useEffect, useRef, useState } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-gsap.registerPlugin(ScrollTrigger);
+// ─── Componente por defecto (Desktop): no hace nada, renderiza hijos directo ──
+export function VideoFramesDesktop({ children }) {
+  return <>{children}</>;
+}
 
-const frameCount = 170;
-const ZOOM_START_FRAME = 160;
-const MAX_ZOOM = 8; // cuánto zoom al llegar al frame final
+// ─── Mobile: intro con video.mp4, luego revela el contenido ──────────────────
+export function VideoFramesMobile({ children }) {
+  const videoRef = useRef(null);
+  const [videoEnded, setVideoEnded] = useState(false);
+  const [fadeOut, setFadeOut] = useState(false);
 
-const currentFrame = (index) =>
-  `/frames/ezgif-frame-${(index + 1).toString().padStart(3, "0")}.png`;
-
-export default function VideoFrames({ children }) {
-  const canvasRef = useRef(null);
-  const containerRef = useRef(null);
-  const childrenRef = useRef(null);
-  const imagesRef = useRef([]);
-  const [isMobile, setIsMobile] = useState(null);
-
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 1024);
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
-
-  useEffect(() => {
-    if (isMobile === false) return;
-
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const context = canvas.getContext("2d");
-
-    const drawImage = (img, zoomFactor = 1) => {
-      if (!img) return;
-      const dpr = window.devicePixelRatio || 1;
-      const cw = canvas.width / dpr;
-      const ch = canvas.height / dpr;
-
-      const srcW = img.width / zoomFactor;
-      const srcH = img.height / zoomFactor;
-      const srcX = (img.width - srcW) / 2;
-      const srcY = (img.height - srcH) / 2;
-
-      const scale = Math.max(cw / srcW, ch / srcH);
-      const dstW = srcW * scale;
-      const dstH = srcH * scale;
-
-      context.clearRect(0, 0, cw, ch);
-      context.drawImage(
-        img,
-        srcX,
-        srcY,
-        srcW,
-        srcH,
-        (cw - dstW) / 2,
-        (ch - dstH) / 2,
-        dstW,
-        dstH,
-      );
-    };
-
-    const handleResize = () => {
-      const dpr = window.devicePixelRatio || 1;
-      canvas.width = window.innerWidth * dpr;
-      canvas.height = window.innerHeight * dpr;
-      context.scale(dpr, dpr);
-      if (imagesRef.current[0]) drawImage(imagesRef.current[0], 1);
-    };
-
-    // Pre-carga de imágenes
-    for (let i = 0; i < frameCount; i++) {
-      const img = new Image();
-      img.src = currentFrame(i);
-      imagesRef.current[i] = img;
-      if (i === 0) img.onload = () => drawImage(img, 1);
-    }
-
-    handleResize();
-    window.addEventListener("resize", handleResize);
-
-    const animState = { frame: 0, zoom: 1 };
-
-    // ─── 1. Animación de frames + zoom sincronizado ───────────────────────
-    gsap.to(animState, {
-      frame: frameCount - 1,
-      ease: "none",
-      scrollTrigger: {
-        id: "vf-frames",
-        trigger: ".video-intro-spacer",
-        start: "top top",
-        end: "bottom top",
-        scrub: true,
-        onUpdate: () => {
-          const frameIndex = Math.round(animState.frame);
-          const img = imagesRef.current[frameIndex];
-
-          // Zoom empieza en frame ZOOM_START_FRAME, llega a MAX_ZOOM en el último
-          let zoom = 1;
-          if (frameIndex >= ZOOM_START_FRAME) {
-            const progress =
-              (frameIndex - ZOOM_START_FRAME) /
-              (frameCount - 1 - ZOOM_START_FRAME);
-            zoom = 1 + progress * (MAX_ZOOM - 1);
-          }
-
-          if (img?.complete) drawImage(img, zoom);
-        },
-      },
-    });
-
-    // ─── Reveal hijos al llegar al último frame ──────────────────────────
-    // El fade ocurre en los últimos 80vh del spacer, justo antes de que
-    // el usuario llegue a los proyectos
-    gsap.fromTo(
-      childrenRef.current,
-      { opacity: 0 },
-      {
-        opacity: 1,
-        duration: 0.4,
-        ease: "power2.out",
-        scrollTrigger: {
-          id: "vf-reveal-children",
-          trigger: ".video-intro-spacer",
-          start: "bottom 120%",
-          end: "bottom top",
-          scrub: true,
-        },
-      },
-    );
-
-    // ─── 2. Fade out del canvas cuando los hijos toman protagonismo ───────
-    // Empieza a desvanecerse solo cuando el contenedor hijo
-    // ya ha scrolleado bastante (al final de todo)
-    gsap.to(".video-fixed-bg", {
-      opacity: 0,
-      scrollTrigger: {
-        id: "vf-hide",
-        trigger: containerRef.current,
-        start: "bottom top",
-        end: "bottom top",
-        scrub: true,
-      },
-    });
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-      ScrollTrigger.getAll().forEach((st) => {
-        if (st.vars.id?.startsWith("vf-")) st.kill();
-      });
-    };
-  }, [isMobile]);
-
-  if (isMobile === false) return <>{children}</>;
+  const handleVideoEnd = () => {
+    // Primero fade out del video, luego revela el contenido
+    setFadeOut(true);
+    setTimeout(() => setVideoEnded(true), 700); // 700ms de fade out
+  };
 
   return (
-    <div ref={containerRef} className="vf-wrapper">
-      {/* Canvas fijo — fondo de toda la escena */}
-      <div className="video-fixed-bg">
-        <canvas ref={canvasRef} className="video-canvas" />
-      </div>
+    <div className="vfm-wrapper">
+      {/* ── Intro de video ── */}
+      {!videoEnded && (
+        <div className={`vfm-intro ${fadeOut ? "vfm-intro--out" : ""}`}>
+          <video
+            ref={videoRef}
+            className="vfm-video"
+            src="/video.mp4"
+            autoPlay
+            muted
+            playsInline
+            onEnded={handleVideoEnd}
+          />
+          {/* Botón para saltar el intro */}
+          <button className="vfm-skip" onClick={handleVideoEnd}>
+            Saltar intro ↓
+          </button>
+        </div>
+      )}
 
-      {/* Espaciador que controla la animación de frames */}
-      <div className="video-intro-spacer" style={{ height: "300vh" }} />
-
-      {/* Hijos (Gastronomy, Pets, etc.) fluyen encima del canvas congelado */}
-      <div ref={childrenRef} className="vf-children">
+      {/* ── Contenido de la página (aparece al terminar el video) ── */}
+      <div className={`vfm-content ${videoEnded ? "vfm-content--visible" : ""}`}>
         {children}
       </div>
 
       <style>{`
-        .vf-wrapper {
+        .vfm-wrapper {
           position: relative;
           width: 100%;
-          background: #000;
         }
-        .video-fixed-bg {
+
+        /* ── Intro ── */
+        .vfm-intro {
           position: fixed;
           inset: 0;
-          z-index: 0;
-          overflow: hidden;
+          z-index: 9999;
           background: #000;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          opacity: 1;
+          transition: opacity 0.7s ease;
+        }
+        .vfm-intro--out {
+          opacity: 0;
           pointer-events: none;
         }
-        .video-canvas {
-          width: 100% !important;
-          height: 100% !important;
-          display: block;
-        }
-        .vf-children {
-          position: relative;
-          z-index: 1;
+
+        /* ── Video a pantalla completa ── */
+        .vfm-video {
           width: 100%;
-          /* Inicialmente ocultos, GSAP los revela al final del intro */
-          opacity: 0;
+          height: 100%;
+          object-fit: cover;
+          position: absolute;
+          inset: 0;
         }
-        /* Los hijos son transparentes para que el canvas se vea */
-        .vf-children section,
-        .vf-children #gallery,
-        .vf-children .gal-sticky {
-          background: transparent !important;
+
+        /* ── Botón de skip ── */
+        .vfm-skip {
+          position: absolute;
+          bottom: 32px;
+          right: 24px;
+          z-index: 10;
+          background: rgba(255, 255, 255, 0.08);
+          color: #fff;
+          border: 1px solid rgba(255, 255, 255, 0.25);
+          padding: 8px 18px;
+          border-radius: 100px;
+          font-family: 'Inter', sans-serif;
+          font-size: 12px;
+          letter-spacing: 1px;
+          cursor: pointer;
+          backdrop-filter: blur(8px);
+          transition: background 0.2s;
+        }
+        .vfm-skip:hover {
+          background: rgba(255, 255, 255, 0.18);
+        }
+
+        /* ── Contenido: oculto hasta que el video termina ── */
+        .vfm-content {
+          opacity: 0;
+          pointer-events: none;
+          transition: opacity 0.6s ease;
+        }
+        .vfm-content--visible {
+          opacity: 1;
+          pointer-events: auto;
         }
       `}</style>
     </div>
   );
+}
+
+// ─── Export por defecto: detecta mobile y usa el componente correcto ──────────
+export default function VideoFrames({ children }) {
+  const [isMobile, setIsMobile] = useState(null);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 1024);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
+  if (isMobile === null) return null;
+  if (!isMobile) return <VideoFramesDesktop>{children}</VideoFramesDesktop>;
+  return <VideoFramesMobile>{children}</VideoFramesMobile>;
 }

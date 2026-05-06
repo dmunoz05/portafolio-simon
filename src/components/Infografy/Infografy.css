@@ -22,11 +22,13 @@
 }
 
 #infografy .infografy-side-img--left {
-    left: -140px;
+    left: 0;
+    transform: translate(-40%, -50%); /* Casi a la mitad fuera */
 }
 
 #infografy .infografy-side-img--right {
-    right: -140px;
+    right: 0;
+    transform: translate(40%, -50%); /* Casi a la mitad fuera */
 }
 
 /* Texto al centro por encima de las fotos */
@@ -63,11 +65,13 @@
     }
 
     #infografy .infografy-side-img--left {
-        left: -100px;
+        left: 0;
+        transform: translate(-45%, -50%);
     }
 
     #infografy .infografy-side-img--right {
-        right: -100px;
+        right: 0;
+        transform: translate(45%, -50%);
     }
 
     #infografy .infografy-container {
@@ -87,25 +91,32 @@
    texto ocupa casi todo el ancho */
 @media (max-width: 640px) {
     #infografy {
-        min-height: 100svh;
-        padding: 4rem 0;
+        min-height: 350px; /* Menos altura para reducir el negro */
+        padding: 3rem 1rem;
     }
 
     #infografy .infografy-side-img {
-        height: 40%;
+        height: 70%; /* Imagen más visible en móvil */
+        min-width: 120px; /* Asegura que no se vean demasiado delgadas */
     }
 
     #infografy .infografy-side-img--left {
-        left: -60px;
+        left: 0;
+        transform: translate(-30%, -50%); /* Menos salida para que se vea más en móvil */
+        z-index: 0;
     }
 
     #infografy .infografy-side-img--right {
-        right: -60px;
+        right: 0;
+        transform: translate(30%, -50%); /* Menos salida para que se vea más en móvil */
+        z-index: 0;
     }
 
     #infografy .infografy-container {
-        width: 75%;
-        padding: 1.5rem;
+        width: 100%;
+        max-width: 450px;
+        padding: 0;
+        z-index: 2;
     }
 
     .infografy-title {
@@ -114,8 +125,9 @@
     }
 
     .infografy-text {
-        font-size: 0.78rem;
-        line-height: 1.55;
+        font-size: 1rem;
+        line-height: 1.6;
+        color: rgba(255, 255, 255, 0.9);
     }
 }
 
@@ -126,15 +138,18 @@
     }
 
     #infografy .infografy-side-img--left {
-        left: -40px;
+        left: 0;
+        transform: translate(-25%, -50%);
     }
 
     #infografy .infografy-side-img--right {
-        right: -40px;
+        right: 0;
+        transform: translate(25%, -50%);
     }
 
     #infografy .infografy-container {
-        width: 80%;
+        width: 100%;
+        padding: 0;
     }
 
     .infografy-title {
@@ -142,6 +157,6 @@
     }
 
     .infografy-text {
-        font-size: 0.72rem;
+        font-size: 0.95rem;
     }
 }

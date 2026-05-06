@@ -1,13 +1,13 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { gsap } from 'gsap'
-import { projects } from '../Gallery/projects'
 import './Lightbox.css'
 
-export default function Lightbox({ activeIndex, onClose }) {
-  const [current, setCurrent]   = useState(activeIndex)
-  const isOpen = activeIndex !== null
+export default function Lightbox({ activeIndex, activeProjects, onClose }) {
+  const [current, setCurrent] = useState(activeIndex ?? 0)
+  const [projects, setProjects] = useState(activeProjects ?? [])
+  const isOpen = activeIndex !== null && activeIndex !== undefined
 
-  const lbRef      = useRef(null)
+  const lbRef       = useRef(null)
   const backdropRef = useRef(null)
   const contentRef  = useRef(null)
   const closeRef    = useRef(null)
@@ -15,10 +15,15 @@ export default function Lightbox({ activeIndex, onClose }) {
   const nextRef     = useRef(null)
   const counterRef  = useRef(null)
 
-  /* Sync current when a new card is opened */
+  /* Sync state when a new card is opened */
   useEffect(() => {
-    if (activeIndex !== null) setCurrent(activeIndex)
-  }, [activeIndex])
+    if (activeIndex !== null && activeIndex !== undefined) {
+      setCurrent(activeIndex)
+    }
+    if (activeProjects?.length) {
+      setProjects(activeProjects)
+    }
+  }, [activeIndex, activeProjects])
 
   /* Animate open */
   useEffect(() => {
@@ -50,6 +55,7 @@ export default function Lightbox({ activeIndex, onClose }) {
   }, [onClose])
 
   const go = useCallback((dir) => {
+    if (!projects.length) return
     const next = (current + dir + projects.length) % projects.length
     gsap.to(contentRef.current, {
       opacity: 0, x: dir * -40, duration: .22, ease: 'power2.in',
@@ -61,7 +67,7 @@ export default function Lightbox({ activeIndex, onClose }) {
         )
       },
     })
-  }, [current])
+  }, [current, projects])
 
   /* Keyboard navigation */
   useEffect(() => {
@@ -75,15 +81,14 @@ export default function Lightbox({ activeIndex, onClose }) {
     return () => window.removeEventListener('keydown', onKey)
   }, [isOpen, close, go])
 
-  const p = projects[current] ?? projects[0]
-  const hiResSrc = p.img.replace(/w=\d+/, 'w=1600')
+  const p = projects[current] ?? {}
 
   return (
     <div id="lightbox" ref={lbRef}>
       <div id="lb-backdrop" ref={backdropRef} onClick={close} />
 
       <div id="lb-content" ref={contentRef}>
-        <img id="lb-img" src={isOpen ? hiResSrc : ''} alt={p.alt} />
+        <img id="lb-img" src={isOpen ? p.img : ''} alt={p.alt ?? ''} />
         <div id="lb-meta">
           <span id="lb-cat">{p.category}</span>
           <p    id="lb-name">{p.name}</p>
@@ -113,7 +118,7 @@ export default function Lightbox({ activeIndex, onClose }) {
       </button>
 
       <span id="lb-counter" ref={counterRef}>
-        {current + 1} / {projects.length}
+        {projects.length > 0 ? `${current + 1} / ${projects.length}` : ''}
       </span>
     </div>
   )

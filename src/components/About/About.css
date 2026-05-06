@@ -58,3 +58,43 @@
   color: var(--gray);
   margin-top: 6px;
 }
+
+/* ── Responsive ─────────────────────────────────── */
+
+@media (max-width: 1024px) {
+  .about-inner {
+    grid-template-columns: 1fr;
+    gap: 60px;
+  }
+  
+  .about-text {
+    text-align: center;
+  }
+}
+
+@media (max-width: 640px) {
+  #about {
+    padding: 60px 24px;
+  }
+
+  .about-inner {
+    gap: 40px;
+  }
+
+  .about-text p:first-of-type {
+    font-size: 18px;
+  }
+
+  .about-text p {
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  .about-stats {
+    gap: 20px;
+  }
+
+  .stat-n {
+    font-size: 42px;
+  }
+}

@@ -107,7 +107,7 @@ export default function Gastronomy({ onOpen }) {
               key={project.id}
               project={project}
               index={i}
-              onOpen={onOpen}
+              onOpen={(idx) => onOpen(idx, projects)}
             />
           ))}
         </div>

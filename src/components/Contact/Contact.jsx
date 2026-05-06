@@ -29,16 +29,16 @@ export default function Contact() {
     <section id="contact" ref={sectionRef}>
       <div className="contact-inner">
         <span className="s-label" style={{ textAlign: 'center', display: 'block' }}>
-          Get in Touch
+          Hablemos
         </span>
         <h2 className="s-title" style={{ textAlign: 'center' }}>
-          Let&apos;s Create<br />Something Beautiful
+          Creemos algo<br />memorable juntos
         </h2>
         <p className="contact-sub">
-          ¿Tienes un proyecto en mente? Cuéntame tu historia y construyamos juntos las imágenes que merece.
+          ¿Tienes una sesión, proyecto o idea en mente? Cuéntame tu historia y hagamos que las imágenes hablen por ti.
         </p>
-        <a href="mailto:simon@cinematographer.com" className="contact-link">
-          simon@cinematographer.com
+        <a href="mailto:simon@simonperezfoto.com" className="contact-link">
+          simon@simonperezfoto.com
         </a>
       </div>
     </section>
