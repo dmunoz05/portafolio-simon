@@ -6,8 +6,8 @@ import "./Hero.css";
 
 gsap.registerPlugin(ScrollTrigger);
 
-/* Silhouette cinematographer */
-function CinematographerSilhouette({ src }) {
+/* Silueta del fotógrafo */
+function PhotographerSilhouette({ src }) {
   return (
     <img
       src={src}
@@ -16,7 +16,7 @@ function CinematographerSilhouette({ src }) {
         height: "auto",
         objectFit: "cover",
       }}
-      alt="Cinematographer"
+      alt="Fotógrafo Simón Pérez"
       className="hero-figure"
     />
   );
@@ -139,23 +139,23 @@ export default function Hero() {
 
       <div className="hero-scene">
         <div className="hero-glow" />
-        <CinematographerSilhouette src={simonBg} />
+        <PhotographerSilhouette src={simonBg} />
       </div>
 
       <canvas id="grain" ref={canvasRef} />
 
       <div className="hero-content">
-        <p className="hero-eye">Cinematographer &amp; Visual Storyteller</p>
+        <p className="hero-eye">Fotógrafo &amp; Diseñador Audiovisual</p>
         <h1 className="hero-title">
           {"SIMON".split("").map((l, i) => (
             <span key={i}>{l}</span>
           ))}
         </h1>
-        <p className="hero-sub">Cinematographer &amp; Visual Storyteller</p>
+        <p className="hero-sub">Fotógrafo &amp; Diseñador Audiovisual</p>
       </div>
 
       <div className="hero-scroll">
-        <span>Scroll</span>
+        <span>Desliza</span>
         <div className="scroll-bar" />
       </div>
     </section>

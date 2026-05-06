@@ -19,8 +19,8 @@ export default function Navbar() {
 
   return (
     <nav ref={navRef} id="nav">
-      <a href="#hero"    className="nav-logo">Simon</a>
-      <a href="#contact" className="nav-cta">Contact</a>
+      <a href="#hero"    className="nav-logo">Simón Pérez</a>
+      <a href="#contact" className="nav-cta">Contacto</a>
     </nav>
   )
 }

@@ -3,20 +3,20 @@ import './Infografy.css'
 export default function Infografy() {
     return (
         <section id="infografy">
-            <img src="/image_left.png" alt="" className="infografy-side-img infografy-side-img--left" />
+            <img src="/image_left.png" alt="Cinematic side shot left" className="infografy-side-img infografy-side-img--left" />
             <div className="infografy-container">
-                <h2 className="infografy-title">Yo soy Simon</h2>
+                <h2 className="infografy-title">Yo soy Simón</h2>
                 <div className="infografy-text">
                     <span>
-                        Con una mirada formada entre el cine europeo de autor y la vitalidad visual latinoamericana, Simon ha desarrollado un lenguaje cinematográfico propio: íntimo, deliberado y emocionalmente preciso.
+                        Fotógrafo y diseñador audiovisual colombiano con una visión forjada entre la calle y el estudio. Creo en la fotografía como lenguaje: cada encuadre es una decisión, cada luz una intención.
 
-                        Cada proyecto es un ejercicio de atención. La luz no se coloca, se descubre. La historia no se filma, se escucha y luego se traduce en imágenes que perduran.
+                        Estudié diseño audiovisual y ese conocimiento vive en cada trabajo: la composición, el color y el movimiento no son accidentes, son elecciones.
 
-                        Especializado en bodas de alta gama, documentales y contenido de marca, Simon colabora con directores, marcas de lujo y artistas que entienden que la forma es parte del fondo.
+                        Trabajo con personas, marcas y proyectos que quieren dejar una huella visual auténtica. Si tienes una historia, yo tengo la imagen para contarla.
                     </span>
                 </div>
             </div>
-            <img src="/image_right.png" alt="" className="infografy-side-img infografy-side-img--right" />
+            <img src="/image_right.png" alt="Cinematic side shot right" className="infografy-side-img infografy-side-img--right" />
         </section>
     )
 }
